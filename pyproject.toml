@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bibspire"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
     {name = "Lorenz Gärtner", email = "lorenz.gaertner@gmail.com"},
 ]

@@ -5,8 +5,8 @@ Command-line interface for BibSpire
 
 import argparse
 import sys
+from importlib.metadata import PackageNotFoundError, version
 
-from importlib.metadata import version, PackageNotFoundError
 from .core import BibSpire
 
 

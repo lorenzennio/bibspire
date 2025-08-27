@@ -74,15 +74,13 @@ jobs:
       run: pytest tests/ -v -m "not slow" --tb=short
 
     # Upload coverage only from Python 3.12
-    - name: Upload coverage reports
+    - name: Generate coverage report
       if: matrix.python-version == '3.12'
-      run: |
-        pip install coverage[toml]
-        pytest tests/ -v -m "not slow" --cov=bibspire --cov-report=xml
+      run: pytest tests/ -v -m "not slow" --cov=bibspire --cov-report=xml --cov-report=term
         
     - name: Upload coverage to Codecov
       if: matrix.python-version == '3.12'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
         flags: unittests

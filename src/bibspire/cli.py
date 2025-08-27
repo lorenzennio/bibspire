@@ -6,7 +6,16 @@ Command-line interface for BibSpire
 import argparse
 import sys
 
+from importlib.metadata import version, PackageNotFoundError
 from .core import BibSpire
+
+
+def get_version():
+    """Get the package version dynamically"""
+    try:
+        return version("bibspire")
+    except PackageNotFoundError:
+        return "unknown"
 
 
 def main():
@@ -28,7 +37,7 @@ def main():
         help="Delay between API requests in seconds (default: 1.0)",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {get_version()}")
 
     args = parser.parse_args()
 

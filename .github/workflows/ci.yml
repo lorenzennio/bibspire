@@ -82,7 +82,7 @@ jobs:
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-      fail_ci_if_error: false
+        fail_ci_if_error: false
 
   # Slow tests with real API calls (only on main branch or when labeled)
   integration-test:

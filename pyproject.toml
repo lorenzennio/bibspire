@@ -10,7 +10,7 @@ authors = [
 ]
 description = "A tool to update .bib entries with INSPIRE-HEP citations"
 readme = "README.md"
-license = "MIT"
+license = {text = "MIT"}
 keywords = ["bibliography", "bibtex", "inspire", "hep", "physics"]
 classifiers = [
     "Development Status :: 4 - Beta",

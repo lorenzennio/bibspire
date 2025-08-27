@@ -273,10 +273,10 @@ This project uses GitHub Actions for automated testing and quality assurance:
 
 ### Quality Gates
 All PRs must pass:
-- ✅ Ruff linting (no violations)
-- ✅ Code formatting check
-- ✅ Test suite (35+ tests)
-- ✅ Package build validation
+- Ruff linting (no violations)
+- Code formatting check
+- Test suite (35+ tests)
+- Package build validation
 
 To trigger slow integration tests, add the `run-slow-tests` label to your PR.
 

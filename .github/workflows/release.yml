@@ -1,0 +1,46 @@
+name: Release
+
+# Trigger on version tags (e.g., v1.0.0)
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  # Build and publish to PyPI
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write  # OIDC for trusted publishing
+      contents: write  # To create releases
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Build package
+      run: python -m build
+    
+    - name: Check package integrity
+      run: twine check dist/*
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        generate_release_notes: true

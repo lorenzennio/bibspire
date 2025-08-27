@@ -43,7 +43,12 @@ class TestCLI:
             main()
 
         captured = capsys.readouterr()
-        assert "1.0.0" in captured.out
+        # Check that version output contains "bibspire" and a version number pattern
+        assert "bibspire" in captured.out
+        # Check for version pattern (e.g., "1.0.0", "1.1.0", etc.)
+        import re
+        version_pattern = r'\d+\.\d+\.\d+'
+        assert re.search(version_pattern, captured.out), f"No version pattern found in: {captured.out}"
 
     @patch("sys.argv", ["bibspire", "--help"])
     def test_help(self, capsys):

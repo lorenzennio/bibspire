@@ -123,10 +123,11 @@ pytest tests/ --cov=bibspire --cov-report=html
 ```bash
 # Use Makefile targets
 make help                   # Show all available targets
-make all                    # Install deps, run checks, and build
+make all                    # Install deps, install pre-commit, run checks, and build
 make check                  # Run linting, formatting, and fast tests
 make ci                     # Run full CI checks with coverage
-make all                    # Install deps, run checks, and build
+make pre-commit-install     # Install pre-commit hooks
+make pre-commit-run         # Run pre-commit on all files
 make test                   # Run fast tests only
 make test-cov               # Run fast tests with coverage
 make lint                   # Run linting
@@ -140,6 +141,27 @@ ruff check src/ tests/     # Run linting
 ruff format src/ tests/    # Format code
 python -m build            # Build package
 ```
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to ensure code quality. The hooks automatically run:
+- Code linting and formatting with Ruff
+- Trailing whitespace removal
+- End-of-file fixes
+- YAML and TOML validation
+- Tests
+
+To set up pre-commit hooks:
+
+```bash
+# Install and activate pre-commit hooks
+make pre-commit-install
+
+# Run pre-commit on all files manually
+make pre-commit-run
+```
+
+Once installed, the hooks will run automatically on every commit. If any hook fails, the commit will be rejected until the issues are fixed.
 
 ### Publishing
 

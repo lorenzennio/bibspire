@@ -37,7 +37,9 @@ def main():
         help="Delay between API requests in seconds (default: 1.0)",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("--version", action="version", version=f"%(prog)s {get_version()}")
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {get_version()}"
+    )
 
     args = parser.parse_args()
 

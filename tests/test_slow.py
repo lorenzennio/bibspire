@@ -47,7 +47,8 @@ class TestRealAPI:
         test_content = """@article{higgs_test,
   title = {Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC},
   author = {Aad, G. and others},
-  year = {2012}
+  year = {2012},
+  DOI = {10.1016/j.physletb.2012.08.020}
 }"""
 
         input_file = tmp_path / "real_test.bib"

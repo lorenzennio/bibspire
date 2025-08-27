@@ -72,7 +72,11 @@ def mock_inspire_response():
                 {
                     "id": "1124337",
                     "metadata": {
-                        "titles": [{"title": "Observation of a new particle..."}],
+                        "titles": [
+                            {
+                                "title": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC"
+                            }
+                        ],
                         "authors": [{"full_name": "Aad, G."}],
                     },
                 }

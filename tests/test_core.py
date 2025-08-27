@@ -27,9 +27,9 @@ class TestBibEntry:
         assert bibtex.endswith("}")
 
     def test_get_search_query_with_title(self, sample_bib_entry):
-        """Test search query generation with title"""
+        """Test search query generation with title and author"""
         query = sample_bib_entry.get_search_query()
-        assert query == 'title:"A Test Paper Title"'
+        assert query == 'title:"A Test Paper Title" and author:"Smith, John"'
 
     def test_get_search_query_with_eprint(self):
         """Test search query generation with eprint"""

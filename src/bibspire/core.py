@@ -103,32 +103,99 @@ class BibEntry:
 
     def get_search_query(self) -> str:
         """Generate search query for INSPIRE"""
-        queries = []
+        # Priority order: DOI > eprint > title+author > title only
 
-        # Try different combinations of fields
-        if "title" in self.fields:
+        # DOI is most specific and reliable
+        if "doi" in self.fields:
+            doi = self.fields["doi"].strip("{}")
+            if doi:
+                return f"doi:{doi}"
+
+        # eprint/arXiv ID is also very specific
+        if "eprint" in self.fields:
+            eprint = self.fields["eprint"].strip("{}")
+            if eprint:
+                return f"eprint:{eprint}"
+
+        # Combine title and author for better specificity
+        if "title" in self.fields and "author" in self.fields:
             title = self.fields["title"].strip("{}")
-            queries.append(f'title:"{title}"')
-
-        if "author" in self.fields:
             author = self.fields["author"].strip("{}")
             # Extract first author
             first_author = author.split(" and ")[0].strip()
-            queries.append(f'author:"{first_author}"')
+            if title and first_author:
+                return f'title:"{title}" and author:"{first_author}"'
 
-        if "eprint" in self.fields:
-            eprint = self.fields["eprint"].strip("{}")
-            queries.append(f"eprint:{eprint}")
-
-        if "doi" in self.fields:
-            doi = self.fields["doi"].strip("{}")
-            queries.append(f"doi:{doi}")
-
-        # Return the most specific query available
-        if queries:
-            return queries[0]  # Start with the first (usually most specific)
+        # Title only as last resort, but only if it's reasonably specific
+        if "title" in self.fields:
+            title = self.fields["title"].strip("{}")
+            # Only use title if it's long enough to be specific (avoid matching common phrases)
+            if title and len(title.split()) >= 5:
+                return f'title:"{title}"'
 
         return ""
+
+    def matches_result(self, inspire_record: Dict) -> bool:
+        """
+        Check if an INSPIRE search result matches this entry
+
+        Args:
+            inspire_record: INSPIRE API record
+
+        Returns:
+            True if the record likely matches this entry
+        """
+        metadata = inspire_record.get("metadata", {})
+
+        # Check DOI match (most reliable)
+        if "doi" in self.fields:
+            original_doi = self.fields["doi"].strip("{}").lower()
+            inspire_dois = [
+                doi.get("value", "").lower() for doi in metadata.get("dois", [])
+            ]
+            if original_doi and any(original_doi in doi for doi in inspire_dois):
+                return True
+
+        # Check arXiv/eprint match (very reliable)
+        if "eprint" in self.fields:
+            original_eprint = self.fields["eprint"].strip("{}").lower()
+            inspire_eprints = [
+                ep.get("value", "").lower() for ep in metadata.get("arxiv_eprints", [])
+            ]
+            if original_eprint and any(original_eprint in ep for ep in inspire_eprints):
+                return True
+
+        # Check title similarity (less reliable, so be more lenient)
+        if "title" in self.fields:
+            original_title = self.fields["title"].strip("{}").lower()
+            inspire_titles = metadata.get("titles", [])
+            for title_obj in inspire_titles:
+                inspire_title = title_obj.get("title", "").lower()
+                # Simple similarity check - check if titles have significant overlap
+                if original_title and inspire_title:
+                    # Remove common words and punctuation for better matching
+                    import string
+
+                    original_words = set(
+                        word.strip(string.punctuation)
+                        for word in original_title.split()
+                        if len(word) > 2
+                    )
+                    inspire_words = set(
+                        word.strip(string.punctuation)
+                        for word in inspire_title.split()
+                        if len(word) > 2
+                    )
+                    # Require at least 80% word overlap for title match (more lenient)
+                    if len(original_words) > 0:
+                        overlap = len(original_words & inspire_words) / len(
+                            original_words
+                        )
+                        if overlap >= 0.8:
+                            return True
+
+        # If we can't verify the match, be conservative and reject it
+        return False
 
 
 class BibParser:
@@ -244,6 +311,22 @@ class BibSpire:
 
             if result is None:
                 print(f"  No match found on INSPIRE for {entry.key}")
+                updated_entries.append(entry)
+                continue
+
+            # Validate that the result actually matches our entry
+            if not entry.matches_result(result):
+                if self.verbose:
+                    inspire_title = (
+                        result.get("metadata", {})
+                        .get("titles", [{}])[0]
+                        .get("title", "Unknown")
+                    )
+                    print(
+                        f"  Found '{inspire_title}' but it doesn't match {entry.key} - skipping"
+                    )
+                else:
+                    print(f"  Found result but it doesn't match {entry.key} - skipping")
                 updated_entries.append(entry)
                 continue
 

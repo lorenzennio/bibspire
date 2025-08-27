@@ -3,7 +3,8 @@ Fixtures and test data for BibSpire tests
 """
 
 import pytest
-from bibspire.core import BibEntry, BibParser, InspireAPI, BibSpire
+
+from bibspire.core import BibEntry
 
 
 @pytest.fixture
@@ -16,8 +17,8 @@ def sample_bib_entry():
             "title": "A Test Paper Title",
             "author": "Smith, John and Doe, Jane",
             "year": "2023",
-            "journal": "Test Journal"
-        }
+            "journal": "Test Journal",
+        },
     )
 
 
@@ -25,13 +26,13 @@ def sample_bib_entry():
 def sample_higgs_entry():
     """Real Higgs discovery paper entry"""
     return BibEntry(
-        entry_type="article", 
+        entry_type="article",
         key="higgs2012",
         fields={
             "title": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC",
             "author": "Aad, G. and others",
-            "year": "2012"
-        }
+            "year": "2012",
+        },
     )
 
 
@@ -72,15 +73,15 @@ def mock_inspire_response():
                     "id": "1124337",
                     "metadata": {
                         "titles": [{"title": "Observation of a new particle..."}],
-                        "authors": [{"full_name": "Aad, G."}]
-                    }
+                        "authors": [{"full_name": "Aad, G."}],
+                    },
                 }
-            ]
+            ],
         }
     }
 
 
-@pytest.fixture 
+@pytest.fixture
 def mock_inspire_bibtex():
     """Mock INSPIRE BibTeX response"""
     return """@article{Aad:2012tfa,

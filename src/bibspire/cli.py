@@ -5,7 +5,6 @@ Command-line interface for BibSpire
 
 import argparse
 import sys
-from typing import Optional
 
 from .core import BibSpire
 
@@ -15,35 +14,24 @@ def main():
     parser = argparse.ArgumentParser(
         description="Update .bib file entries with INSPIRE-HEP citations",
         prog="bibspire",
-        epilog="Example: bibspire input.bib -o output.bib -v"
+        epilog="Example: bibspire input.bib -o output.bib -v",
+    )
+    parser.add_argument("input_file", help="Input .bib file")
+    parser.add_argument(
+        "-o", "--output", help="Output .bib file (defaults to input file)"
     )
     parser.add_argument(
-        "input_file",
-        help="Input .bib file"
-    )
-    parser.add_argument(
-        "-o", "--output",
-        help="Output .bib file (defaults to input file)"
-    )
-    parser.add_argument(
-        "-d", "--delay",
+        "-d",
+        "--delay",
         type=float,
         default=1.0,
-        help="Delay between API requests in seconds (default: 1.0)"
+        help="Delay between API requests in seconds (default: 1.0)",
     )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Verbose output"
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 1.0.0"
-    )
-    
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
+
     args = parser.parse_args()
-    
+
     try:
         bibspire = BibSpire(delay=args.delay, verbose=args.verbose)
         bibspire.update_bib_file(args.input_file, args.output)

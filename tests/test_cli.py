@@ -49,9 +49,9 @@ class TestCLI:
         import re
 
         version_pattern = r"\d+\.\d+\.\d+"
-        assert re.search(
-            version_pattern, captured.out
-        ), f"No version pattern found in: {captured.out}"
+        assert re.search(version_pattern, captured.out), (
+            f"No version pattern found in: {captured.out}"
+        )
 
     @patch("sys.argv", ["bibspire", "--help"])
     def test_help(self, capsys):

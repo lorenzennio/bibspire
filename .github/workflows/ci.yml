@@ -9,7 +9,6 @@ on:
 
 jobs:
   # Code quality checks
-  # Code quality checks
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
@@ -41,7 +40,6 @@ jobs:
     - name: Run Ruff formatting check
       run: ruff format --check src/ tests/
 
-  # Test across Python versions
   # Test across Python versions
   test:
     name: Test Suite
@@ -92,7 +90,6 @@ jobs:
         fail_ci_if_error: false
 
   # Slow tests with real API calls (only on main branch or when labeled)
-  # Slow tests with real API calls (only on main branch or when labeled)
   integration-test:
     name: Integration Tests (Slow)
     runs-on: ubuntu-latest
@@ -125,7 +122,6 @@ jobs:
       run: pytest tests/ -v -m "slow" --tb=short
       timeout-minutes: 10
 
-  # Verify package builds correctly
   # Verify package builds correctly
   build:
     name: Build Package
